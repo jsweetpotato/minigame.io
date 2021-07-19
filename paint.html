@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painting</title>
+  <style> 
+     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap');
+
+    ::selection{
+      background: none;
+    }
+
+    *{
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body{
+      margin: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: rgb(238, 240, 241);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      text-transform: uppercase;
+      font-size: 2.8rem;
+      letter-spacing: 1px;
+      color: #111824;
+    }
+    
+    .canvas{
+      border-radius: 10px;
+      width: 500px;
+      height: 500px;
+      background-color: #fff;
+      box-shadow: 2px 5px 12px rgba(46, 59, 61, 0.1);
+    }
+
+    .main-btn{
+      margin-top: 40px;
+      width: 500px;
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+    .btn{
+      height: 46px;
+      width: 100px;
+      font-size: 1.2em;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      color: #393e47;
+      background: #fff;
+      box-shadow: 2px 5px 12px rgba(46, 59, 61, 0.1);
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .control{
+      width: 500px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: baseline;
+    }
+
+    .color-btn{
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow:1px 2px 4px rgba(46, 59, 61, 0.3);
+      transition: all 0.1s;
+    }
+
+    .img-btn{
+      width: 44px;
+      height: 44px;
+      background: url(../images/flower.png) no-repeat 50% 50% /cover;
+      border: none;
+      cursor: pointer;
+      filter: drop-shadow( 1px 2px 4px rgba(46, 59, 61, 0.3));
+      transition: 0.5s;
+    }
+
+    .btn:hover{
+      color: royalblue;
+      transition: all 0.1s ease-in-out;
+    }
+    
+    .color-btn:active,
+    .img-btn:active,
+    .btn:active{
+      transform: scale(0.9);
+    }
+
+    .color-btn[data-color="#111824"]{
+      background-color: #111824;
+    }
+    
+    .color-btn[data-color="#3980fb"]{
+      background-color: #3980fb;
+    }
+    
+    .color-btn[data-color="#53d641"]{
+      background-color: #53d641;
+    }
+
+    .color-btn[data-color="#ffbb29"]{
+      background-color: #ffbb29;
+    }
+
+    .color-btn[data-color="#ff7f07"]{
+      background-color: #ff7f07;
+    }
+
+    .color-btn[data-color="#ff2033"]{
+      background-color: #ff2033;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Painting</h1>
+  <canvas class="canvas" width="1000" height="1000">이 브라우저는 캔버스를 지원하지 않습니다.</canvas>
+  <div class="control">
+    <button class="img-btn" data-type="image"></button>
+    <button class="color-btn" data-type="color" data-color="#111824"></button>
+    <button class="color-btn" data-type="color" data-color="#3980fb"></button>
+    <button class="color-btn" data-type="color" data-color="#53d641"></button>
+    <button class="color-btn" data-type="color" data-color="#ffbb29"></button>
+    <button class="color-btn" data-type="color" data-color="#ff7f07"></button>
+    <button class="color-btn" data-type="color" data-color="#ff2033"></button>
+  </div>
+  <div class="main-btn">
+    <button class="btn reset-btn">reset</button>
+    <button class="btn save-btn">save</button>
+  </div>
+
+
+  <script>
+    const canvas = document.querySelector('.canvas');
+    const ctx = canvas.getContext('2d');
+    const control = document.querySelector('.control');
+    const resultImage = document.querySelector('.canvas');
+    const saveBtn = document.querySelector('.save-btn');
+    const resetBtn = document.querySelector('.reset-btn');
+    let drawingMode = undefined;
+    let brush = 'color'; //color 또는 image
+    let colorValue = '#111824';
+
+    const imgElem = new Image();
+    imgElem.src = '../images/flower.png';
+
+    function startPaint(){
+      drawingMode = true;
+    }
+
+    function stopPaint(){
+      drawingMode = false;
+    }
+
+    function clickHandler(e){
+      if (!drawingMode){ 
+          ctx.beginPath();
+      } else{
+        switch(brush){
+        case 'color':
+          ctx.lineTo(e.layerX*2, e.layerY*2);
+          ctx.lineCap = "round";
+          ctx.linejoin = "round";
+          ctx.lineWidth = 30;
+          ctx.stroke();
+          break;
+        case 'image':
+          ctx.drawImage(imgElem, e.layerX*2, e.layerY*2, 50, 50);
+          break;
+       }
+      } 
+    }
+    
+    function setColor(e){
+      brush = e.target.getAttribute('data-type');
+      colorValue = e.target.getAttribute('data-color');
+      ctx.strokeStyle = colorValue;
+    }
+
+    function createImg(){
+      const url = canvas.toDataURL();
+      const link = document.createElement("a");
+      link.href = url
+      link.download = "Paint"; 
+      link.click();
+    }
+
+    function clearCanvas(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    canvas.addEventListener('mousedown', startPaint);
+    canvas.addEventListener('mousemove', clickHandler);
+    canvas.addEventListener('mouseup', stopPaint);
+    control.addEventListener('click', setColor);
+    saveBtn.addEventListener('click', createImg);
+    resetBtn.addEventListener('click', clearCanvas);
+  </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Game</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js"></script>
+</head>
+<style>
+  .canvas, .canvas2 {
+    width: 1000px;
+    height: 200px;
+    background-color: #eee;
+  }
+</style>
+<body>
+  <h1>Mini Game</h1>
+  <canvas class="canvas" width="2000" height="400"></canvas>
+  <canvas class="canvas2" width="2000" height="400"></canvas>
+
+  <script>
+    const canvas = document.querySelector('.canvas');
+    const ctx = canvas.getContext('2d');
+    let xPos = 50;
+    let timerId;
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx. beginPath();
+      ctx.arc(xPos, 200, 50, Math.PI *2, false);
+      ctx.fill();
+      xPos += 3;
+      // if (xPos <= canvas.width - 50) {
+      //   requestAnimationFrame(draw);   
+      // }
+      timerId = requestAnimationFrame(draw);   
+    }
+
+    
+    draw();
+    
+    canvas.addEventListener('click', () => {
+      cancelAnimationFrame(timerId);
+    });
+
+    const canvas2 = document.querySelector('.canvas2');
+    const ctx2 = canvas2.getContext('2d');
+    let xPos2 = 50;
+    let timerId2;
+
+    function draw2() {
+      ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+      ctx2. beginPath();
+      ctx2.arc(xPos, 200, 50, Math.PI *2, false);
+      ctx2.fill();
+      xPos2 += 3;
+      timerId2 = setInterval(draw2, 100);   
+    }
+
+    draw2();
+    
+    canvas2.addEventListener('click', () => {
+      clearInterval(timerId2);
+    });
+  </script>
+
+</body>
+</html>
